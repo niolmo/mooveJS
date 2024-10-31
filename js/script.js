@@ -19,11 +19,24 @@ const btnMore = document.querySelector(".show-more");
 const btnClose = document.querySelector(".btn-close");
 const loader = document.querySelector(".loader-wrapper");
 
+//Events
+
+btnMore.addEventListener("click", () => {
+  fetchAndRenderFilms().catch((error) => console.log(error));
+});
+
 //Functions
 
+//Получаеи данные и в JSON
+async function fetchData(url, options) {
+  const response = await fetch(url, options);
+  const data = await response.json();
+  return data;
+}
+
+//Рендерим фильмы
 function renderFilms(items) {
   for (item of items) {
-    console.log(items);
     const card = document.createElement("div");
     card.classList.add("card");
     card.id = item.kinopoiskId;
@@ -39,27 +52,31 @@ function renderFilms(items) {
   }
 }
 
-async function fetchData(url, options) {
-  const response = await fetch(url, options);
-  const data = await response.json();
-  return data;
-}
-
+//Сводим все в одну функцию
 async function fetchAndRenderFilms() {
+  //Показываем лоадер
+  loader.classList.remove("none");
+
+  //Получаем данные
   const data = await fetchData(
-    url + `collections?type=TOP_250_MOVIES&page=1`,
+    url + `collections?type=TOP_250_MOVIES&page=${page}`,
     options
   );
+  if (data.totalPages > 1) page++;
 
+  //Скрываем лоадер
+  loader.classList.add("none");
+
+  //Рендерим фильмы
   renderFilms(data.items);
 }
 
+//Открываем детали
 async function openFilmDetails(e) {
   // Достаем id фильма
   const id = e.currentTarget.id;
 
   // Получаем данные фильма
   const data = await fetchData(url + id, options);
-  console.log(data);
 }
 fetchAndRenderFilms().catch((error) => console.log(error));
