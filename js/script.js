@@ -16,8 +16,8 @@ let page = 1;
 
 const filmsWrapper = document.querySelector(".films");
 const btnMore = document.querySelector(".show-more");
-const btnClose = document.querySelector(".btn-close");
 const loader = document.querySelector(".loader-wrapper");
+// const detail = document.querySelector(".container-right");
 
 //Events
 
@@ -77,6 +77,45 @@ async function openFilmDetails(e) {
   const id = e.currentTarget.id;
 
   //Получаем данные
-  const film = await fetchData(url + id, options);
+  const data = await fetchData(url + id, options);
+
+  //Рендерим фильм
+  renderFilmData(data);
+}
+
+//Рендерим фильм
+function renderFilmData(item) {
+  // 1. Рендерим контейнер деталей
+  const containerRight = document.createElement("div");
+  containerRight.classList.add("container-right");
+  document.body.insertAdjacentElement("afterbegin", containerRight);
+
+  // 2. Кнопка закрытия
+  const btnClose = document.createElement("button");
+  btnClose.classList.add("btn-close");
+  btnClose.innerHTML = `<img src="./img/cross.svg" alt="Close" width="24" />`;
+  btnClose.addEventListener("click", () => {
+    containerRight.remove();
+  });
+  containerRight.insertAdjacentElement("beforeend", btnClose);
+
+  // 3. Рендерим фильм
+  const film = document.createElement("div");
+  film.classList.add("film");
+  containerRight.insertAdjacentElement("beforeend", film);
+
+  const html = `
+      <div class="film__title">${item.nameRu}</div>
+      <div class="film__img"><img src=${item.posterUrl} alt="Cover"></div>
+      <div class="film__desc">
+        <p class="film__details">Год: ${item.year}</p>
+        <p class="film__details">Рейтинг: ${item.ratingKinopoisk}</p>
+        <p class="film__details">Продолжительность: ${item.filmLength} мин.</p>
+        <p class="film__details">Страна: ${item.countries[0].country}</p>
+        <p class="film__details">Жанр: ${item.genres[0].genre}</p>
+      </div>
+  }`;
+
+  film.insertAdjacentHTML("beforeend", html);
 }
 fetchAndRenderFilms().catch((error) => console.log(error));
