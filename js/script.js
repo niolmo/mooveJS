@@ -87,7 +87,7 @@ async function openFilmDetails(e) {
 function renderFilmData(item) {
   //0. проверка на наличие деталей
   if (document.querySelector(".container-right")) {
-    document.querySelector(".container-right").remove;
+    document.querySelector(".container-right").remove();
   }
 
   // 1. Рендерим контейнер деталей
