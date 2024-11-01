@@ -40,6 +40,7 @@ function renderFilms(items) {
     const card = document.createElement("div");
     card.classList.add("card");
     card.id = item.kinopoiskId;
+    card.onclick = openFilmDetails;
     const html = `
     <img class="card__img" src=${item.posterUrlPreview} alt="Poster">
     <p< class="card__title">${item.nameRu}</p>
@@ -48,7 +49,7 @@ function renderFilms(items) {
     <p class="card__rate">${item.ratingKinopoisk}</p
   `;
     card.insertAdjacentHTML("beforeend", html);
-    filmsWrapper.appendChild(card);
+    filmsWrapper.insertAdjacentElement("beforeend", card);
   }
 }
 
@@ -73,10 +74,9 @@ async function fetchAndRenderFilms() {
 
 //Открываем детали
 async function openFilmDetails(e) {
-  // Достаем id фильма
   const id = e.currentTarget.id;
 
-  // Получаем данные фильма
-  const data = await fetchData(url + id, options);
+  //Получаем данные
+  const film = await fetchData(url + id, options);
 }
 fetchAndRenderFilms().catch((error) => console.log(error));
